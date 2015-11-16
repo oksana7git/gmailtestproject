@@ -28,11 +28,14 @@ public class GmailSendAndSearchTest {
     @Test
     public void testSendAndSearchMail() {
         String subject = Long.toString(currentTimeMillis());
+
         signIn(getLogin, getPassword);
+
         clickButton("COMPOSE");
         fillInField("to", "oksana.kondratovych@gmail.com");
         fillInField("subjectbox", subject);
         clickButton("Send");
+        
         fillInFieldAndPressEnter("q", subject);
         hold().until(ExpectedConditions.presenceOfAllElementsLocatedBy(mails));
         assertFoundMailsAre(mails, subject);
