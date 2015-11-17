@@ -3,10 +3,8 @@ package gmailsendsearch;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static gmailsendsearch.MailLogin.getLogin;
 import static gmailsendsearch.MailLogin.getPassword;
@@ -16,7 +14,6 @@ import static java.lang.System.currentTimeMillis;
 public class GmailSendAndSearchTest {
 
     public static WebDriver driver = new FirefoxDriver();
-    By mails = by("[role=\"main\"] .zA .y6");
 
     @BeforeClass
     public static void openPage() {
@@ -35,10 +32,9 @@ public class GmailSendAndSearchTest {
         fillInField("to", "oksana.kondratovych@gmail.com");
         fillInField("subjectbox", subject);
         clickButton("Send");
-        
-        fillInFieldAndPressEnter("q", subject);
-        hold().until(ExpectedConditions.presenceOfAllElementsLocatedBy(mails));
-        assertFoundMailsAre(mails, subject);
+
+        searchForMails(subject);
+        assertFoundMailsAre(subject);
     }
 
     @AfterClass
