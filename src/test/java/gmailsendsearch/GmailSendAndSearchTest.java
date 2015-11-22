@@ -3,9 +3,11 @@ package gmailsendsearch;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import static gmailsendsearch.CustomConditions.*;
 import static gmailsendsearch.MailLogin.getLogin;
 import static gmailsendsearch.MailLogin.getPassword;
 import static gmailsendsearch.Tools.*;
@@ -13,13 +15,10 @@ import static java.lang.System.currentTimeMillis;
 
 public class GmailSendAndSearchTest {
 
-    public static WebDriver driver = new FirefoxDriver();
-
     @BeforeClass
     public static void openPage() {
-        Tools.driver = driver;
-        driver.get("http://gmail.com");
-        driver.manage().window().maximize();
+        setWebDriver(new FirefoxDriver());
+        open("http://gmail.com");
     }
 
     @Test
@@ -28,17 +27,27 @@ public class GmailSendAndSearchTest {
 
         signIn(getLogin, getPassword);
 
-        clickButton("COMPOSE");
-        fillInField("to", "oksana.kondratovych@gmail.com");
-        fillInField("subjectbox", subject);
-        clickButton("Send");
+        find(byText("COMPOSE")).click();
+        find(By.name("to")).sendKeys("oksana.kondratovych@gmail.com");
+        find(By.name("subjectbox")).sendKeys(subject);
+        find(byText("Send")).click();
+        find(By.cssSelector("[href$='#inbox']")).click();
+        hold().until(listNthElementHasText(mails, 0, subject));
 
-        searchForMails(subject);
-        assertFoundMailsAre(subject);
+        find(By.name("q")).sendKeys(subject + Keys.ENTER);
+        hold().until(sizeOf(mails, 1));
+        hold().until(exactTexts(mails, subject));
     }
 
     @AfterClass
     public static void tearDown() {
-        driver.quit();
+        getWebDriver().quit();
+    }
+
+    By mails = by("[role=\"main\"] .zA .y6");
+
+    public static void signIn(String login, String password) {
+        find(By.name("Email")).sendKeys(login + Keys.ENTER);
+        find(By.name("Passwd")).sendKeys(password + Keys.ENTER);
     }
 }
