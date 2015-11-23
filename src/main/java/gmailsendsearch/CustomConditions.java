@@ -41,8 +41,8 @@ public class CustomConditions {
             public Boolean apply(WebDriver driver) {
                 List<WebElement> actualElements = driver.findElements(locatorsList);
 
-                for (WebElement mail : actualElements) {
-                    foundTexts.add(mail.getText());
+                for (WebElement element : actualElements) {
+                    foundTexts.add(element.getText());
                 }
 
                 if (expectedTexts.length != foundTexts.size()) {
